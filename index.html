@@ -25,12 +25,10 @@
 
 <div id="output"></div>
 
-<script src="/fin.e.js"></script>
+<script type="module">
+import { GHOST_SCAN_REAL } from "./fin.e.js";
 
-<script>
-// ------------------------------------------------------
-// RESPO-Liste (ALLE Cluster)
-// ------------------------------------------------------
+// RESPO-Liste
 const RESPO_NAMES = [
   "AIR",
   "boerse",
@@ -44,12 +42,10 @@ const RESPO_NAMES = [
   "NG"
 ];
 
-// ------------------------------------------------------
 // Loader
-// ------------------------------------------------------
 async function loadRespo(name){
   try {
-    const res = await fetch(`/RESPO/${name}.json`);
+    const res = await fetch(`./RESPO/${name}.json`);
     return await res.json();
   } catch(e){
     return { NAME:name, MISS:true };
@@ -64,9 +60,7 @@ async function loadAllRespos(){
   return respos;
 }
 
-// ------------------------------------------------------
 // Renderer
-// ------------------------------------------------------
 function renderScan(scan){
   const out = document.getElementById("output");
   out.innerHTML = "";
@@ -83,21 +77,18 @@ function renderScan(scan){
     box.innerHTML = `
       <h2 class="${statusClass}">${r.NAME}</h2>
       <p><b>ID:</b> ${r.ID}</p>
-      <p><b>LAGE:</b> ${r.RAUM ? JSON.stringify(r.RAUM) : "(keine LAGE)"}</p>
       <p><b>STATUS:</b> ${r.STATUS}</p>
       <p><b>RESULT:</b> ${r.RESULT}</p>
       <p><b>OUT:</b> ${JSON.stringify(r.OUT)}</p>
-      <p><b>REAL:</b> ${r.WAHRHEIT || "?"}</p>
-      <p><b>EDIT:</b> ${r.IST_IST || "?"}</p>
+      <p><b>REAL:</b> ${r.WAHRHEIT}</p>
+      <p><b>EDIT:</b> ${r.IST_IST}</p>
     `;
 
     out.appendChild(box);
   });
 }
 
-// ------------------------------------------------------
 // Start
-// ------------------------------------------------------
 loadAllRespos().then(respos => {
   const scan = respos.map(r => GHOST_SCAN_REAL(r));
   renderScan(scan);
