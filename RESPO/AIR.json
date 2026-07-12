@@ -1,0 +1,9 @@
+{
+  "NAME": "AIR",
+  "ID": "AIR-001",
+  "STATUS": "OK",
+  "RESULT": "OK",
+  "OUT": { "flow": "airflow" },
+  "WAHRHEIT": true,
+  "IST_IST": "REAL"
+}
