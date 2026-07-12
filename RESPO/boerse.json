@@ -1,0 +1,9 @@
+{
+  "NAME": "boerse",
+  "ID": "BRS-002",
+  "STATUS": "OK",
+  "RESULT": "HELFEN",
+  "OUT": { "trend": "up" },
+  "WAHRHEIT": true,
+  "IST_IST": "REAL"
+}
