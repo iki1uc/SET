@@ -2,98 +2,34 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>GHOST-SCAN – Systemlage</title>
-
+<title>SET · Zentrum</title>
 <style>
-  body { font-family: Arial; background:#111; color:#eee; }
-  h1 { text-align:center; }
-  .respo-box {
-    border:1px solid #444;
-    padding:10px;
-    margin:10px;
-    background:#222;
-  }
-  .ok { color:#00ff88; }
-  .help { color:#ffcc00; }
-  .error { color:#ff4444; }
+body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
+h1, h2 { color:#6cf; }
+pre { background:#111; border:1px solid #333; padding:12px; }
+a { color:#6cf; display:block; margin:10px 0; }
 </style>
 </head>
 
 <body>
 
-<h1>GHOST‑SCAN – Systemlage</h1>
+<h1>SET · Zentrum</h1>
 
-<div id="output"></div>
+<pre>
+CORE = SET
+KONSTELLATION = TMP
+FREQ = 12e
+6D = D2
+360° = Zentrum-Sequenz
+ROLLE = Matrix & Stabilisierung
+STATUS = Aktiv
+READY = 100%
+</pre>
 
-<script type="module">
-import { GHOST_SCAN_REAL } from "./fin.e.js";
-
-// RESPO-Liste
-const RESPO_NAMES = [
-  "AIR",
-  "boerse",
-  "markt3",
-  "HOME",
-  "USE",
-  "ACSH",
-  "REAL",
-  "BIL",
-  "DU",
-  "NG"
-];
-
-// Loader
-async function loadRespo(name){
-  try {
-    const res = await fetch(`./RESPO/${name}.json`);
-    return await res.json();
-  } catch(e){
-    return { NAME:name, MISS:true };
-  }
-}
-
-async function loadAllRespos(){
-  const respos = [];
-  for(const n of RESPO_NAMES){
-    respos.push(await loadRespo(n));
-  }
-  return respos;
-}
-
-// Renderer
-function renderScan(scan){
-  const out = document.getElementById("output");
-  out.innerHTML = "";
-
-  scan.forEach(r => {
-    const box = document.createElement("div");
-    box.className = "respo-box";
-
-    let statusClass = "ok";
-    if(r.RESULT === "HELFEN") statusClass = "help";
-    if(r.ERROR === true) statusClass = "error";
-    if(r.MISS === true) statusClass = "error";
-
-    box.innerHTML = `
-      <h2 class="${statusClass}">${r.NAME}</h2>
-      <p><b>ID:</b> ${r.ID}</p>
-      <p><b>STATUS:</b> ${r.STATUS}</p>
-      <p><b>RESULT:</b> ${r.RESULT}</p>
-      <p><b>OUT:</b> ${JSON.stringify(r.OUT)}</p>
-      <p><b>REAL:</b> ${r.WAHRHEIT}</p>
-      <p><b>EDIT:</b> ${r.IST_IST}</p>
-    `;
-
-    out.appendChild(box);
-  });
-}
-
-// Start
-loadAllRespos().then(respos => {
-  const scan = respos.map(r => GHOST_SCAN_REAL(r));
-  renderScan(scan);
-});
-</script>
+<h2>Dateien</h2>
+<a href="./ID.html">Identität</a>
+<a href="./RESPO/boerse.json">boerse.json</a>
+<a href="./fin.e.js">fin.e.js</a>
 
 </body>
 </html>
