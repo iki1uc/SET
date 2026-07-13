@@ -1,9 +1,9 @@
 {
-  "NAME": "boerse",
-  "ID": "BRS-002",
-  "STATUS": "OK",
-  "RESULT": "HELFEN",
-  "OUT": { "trend": "up" },
-  "WAHRHEIT": true,
-  "IST_IST": "REAL"
+  "MODULE": "SET",
+  "TYPE": "Boerse",
+  "KONSTELLATION": "TMP",
+  "FREQ": "12e",
+  "6D": "D2",
+  "360": "Boerse-Sequenz",
+  "ACTIVE": true
 }
