@@ -1,0 +1,27 @@
+# SET.respo – Zentrum / Matrix / 12e / 6D
+
+SET = /set/
+
+# Kompatibilität
+ROOT.compat  = TMP
+PIPE.compat  = TMP
+SET.compat   = TMP
+LAGE.compat  = TMP
+laTER.compat = TMP
+ORT.compat   = TMP
+
+# Frequenz
+FREQ.12 = iki → bir → uc → LE → iki1uc → GO → sys → tem → AU → RA → TET → RIZ → …
+
+# 6D
+D0 = IN
+D1 = PIPE
+D2 = SET
+D3 = LAGE
+D4 = LaTER
+D5 = ORT
+
+# 360°
+SEQ.360 = D2 → D3 → D4 → D5 → D0 → D1 → D2
+
+ACTIVE = TRUE
