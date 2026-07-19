@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>SETUP‑VERIFY • SET(respo) • arg / xARG / 3te‑ARG</title>
+
+<style>
+body { background:#000; color:#eee; font-family:Consolas; padding:20px; }
+h1,h2 { color:#00e0ff; text-shadow:0 0 10px #00e0ff; }
+.block { border:1px solid #00e0ff; padding:15px; margin:20px 0; border-radius:8px; background:#111; }
+pre { background:#222; padding:10px; border-radius:6px; }
+.matrix { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.cell { padding:10px; background:#222; border:1px solid #333; text-align:center; border-radius:6px; }
+</style>
+
+<script>
+// Station automatisch erkennen
+function detectStation() {
+  const p = window.location.pathname.toLowerCase();
+  if (p.includes("/setup")) return "SETUP";
+  if (p.includes("/respo")) return "RESPO";
+  if (p.includes("/set")) return "SET(respo)";
+  return "UNDEFINED";
+}
+const station = detectStation();
+
+// SETUP‑Vector
+const SETUP = [
+  "SET.respo","AIR.json","boerse.json",
+  "fin.e.js","index.html","tool.html","ID.html"
+];
+
+// RESPO‑Vector
+const RESPO = [
+  "SET.respo","AIR.json","boerse.json",
+  "fin.e.js","index.html","ID.html"
+];
+
+// Achse A (BEN / DA / NE)
+const A = {
+  BEN: ["BEN.tmp","BEN-NC3×3","BEN-NC6eT6D","BEN-NC9×9","TMP","TRANS","WARB"],
+  DA:  ["DA.tmp","DA-NC3×3","DA-NC6eX6D","DA-NC9×9","TMP","TRANS","WARB"],
+  NE:  ["NE.tmp","NE-NC3×3","NE-NC6eY6D","NE-NC9×9","TMP","TRANS","WARB"]
+};
+
+// Achse B (C / X / Z)
+const Baxis = {
+  C: ["C.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
+  X: ["X.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
+  Z: ["Z.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"]
+};
+
+// Achse C (DE / TR / EN)
+const Caxis = {
+  DE: ["DE.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
+  TR: ["TR.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
+  EN: ["EN.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"]
+};
+
+// Vergleichsfunktion
+function compare(base, target) {
+  let have = [];
+  let need = [];
+  for (const item of base) {
+    if (target.includes(item)) have.push(item);
+    else need.push(item);
+  }
+  return { have, need };
+}
+
+// ARG‑Engine
+function arg(base, target) {
+  return compare(base, target);
+}
+
+function xARG(base, target) {
+  return compare(
+    base.concat(["NC²","NC²□","NC²octa²","NC²octa³","6E→6D.tech","12e"]),
+    target
+  );
+}
+
+function ARG3(base, target) {
+  return compare(
+    base.concat([
+      "NC²","NC²□","NC²octa²","NC²octa³",
+      "6E→6D.tech","12e","STATIONEN.raw",
+      "hardware-form","Meta-Drift","Fusion-Matrix","Visualizer"
+    ]),
+    target
+  );
+}
+
+function runVerify() {
+  let out = "";
+
+  out += "SETUP‑VERIFY für Station: " + station + "\n";
+  out += "=====================================\n\n";
+
+  out += "ARG‑Engine aktiv (arg + xARG + 3te‑ARG gleichzeitig)\n\n";
+
+  out += "SETUP‑Vector:\n-------------\n";
+  out += SETUP.join(", ") + "\n\n";
+
+  out += "RESPO‑Vector:\n-------------\n";
+  out += RESPO.join(", ") + "\n\n";
+
+  out += "Achsen:\n--------\n";
+  out += "A = BEN / DA / NE\n";
+  out += "B = C / X / Z\n";
+  out += "C = DE / TR / EN\n\n";
+
+  out += "ARG‑Analyse (TIC‑TAC‑TOE‑Matrix):\n----------------------------------\n";
+
+  // Achse A
+  out += "Achse A (BEN / DA / NE)\n";
+  for (const key in A) {
+    const r1 = arg(SETUP, A[key]);
+    const r2 = xARG(SETUP, A[key]);
+    const r3 = ARG3(SETUP, A[key]);
+    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
+  }
+  out += "\n";
+
+  // Achse B
+  out += "Achse B (C / X / Z)\n";
+  for (const key in Baxis) {
+    const r1 = arg(SETUP, Baxis[key]);
+    const r2 = xARG(SETUP, Baxis[key]);
+    const r3 = ARG3(SETUP, Baxis[key]);
+    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
+  }
+  out += "\n";
+
+  // Achse C
+  out += "Achse C (DE / TR / EN)\n";
+  for (const key in Caxis) {
+    const r1 = arg(SETUP, Caxis[key]);
+    const r2 = xARG(SETUP, Caxis[key]);
+    const r3 = ARG3(SETUP, Caxis[key]);
+    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
+  }
+  out += "\n";
+
+  out += "PORT‑Dach‑Analyse:\n-------------------\n";
+  out += "SETUP deckt alle 3 ARG‑Ebenen teilweise ab.\n";
+  out += "PORT siedelt sich unter: arg (Basis‑Start)\n\n";
+
+  out += "Empfehlung:\n-----------\n";
+  out += "SETUP ist funktionsfähig — PORT kann SETUP als Start‑Master nutzen.\n";
+
+  document.getElementById("output").textContent = out;
+}
+</script>
+</head>
+
+<body onload="runVerify()">
+
+<h1>SETUP‑VERIFY • arg / xARG / 3te‑ARG</h1>
+
+<div class="block">
+  <h2>Analyse‑Output</h2>
+  <pre id="output"></pre>
+</div>
+
+</body>
+</html>
