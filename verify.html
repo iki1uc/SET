@@ -2,62 +2,41 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>SETUP‑VERIFY • SET(respo) • arg / xARG / 3te‑ARG</title>
+<title>SET · VERIFY · Zentrum</title>
 
 <style>
-body { background:#000; color:#eee; font-family:Consolas; padding:20px; }
-h1,h2 { color:#00e0ff; text-shadow:0 0 10px #00e0ff; }
-.block { border:1px solid #00e0ff; padding:15px; margin:20px 0; border-radius:8px; background:#111; }
-pre { background:#222; padding:10px; border-radius:6px; }
-.matrix { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.cell { padding:10px; background:#222; border:1px solid #333; text-align:center; border-radius:6px; }
+body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
+h1,h2 { color:#6cf; }
+.block { background:#111; border:1px solid #333; padding:15px; margin:20px 0; }
+pre { background:#000; border:1px solid #333; padding:12px; }
+.good { color:#0f0; }
+.mid { color:#ff0; }
+.bad { color:#f33; }
 </style>
 
 <script>
-// Station automatisch erkennen
-function detectStation() {
-  const p = window.location.pathname.toLowerCase();
-  if (p.includes("/setup")) return "SETUP";
-  if (p.includes("/respo")) return "RESPO";
-  if (p.includes("/set")) return "SET(respo)";
-  return "UNDEFINED";
-}
-const station = detectStation();
-
-// SETUP‑Vector
-const SETUP = [
-  "SET.respo","AIR.json","boerse.json",
-  "fin.e.js","index.html","tool.html","ID.html"
+// SET · Zentrum – Kernmodule
+const SET = [
+  "SET.respo",
+  "AIR.json",
+  "boerse.json",
+  "fin.e.js",
+  "index.html",
+  "tool.html",
+  "ID.html"
 ];
 
-// RESPO‑Vector
+// RESPO – Kernmodule
 const RESPO = [
-  "SET.respo","AIR.json","boerse.json",
-  "fin.e.js","index.html","ID.html"
+  "SET.respo",
+  "AIR.json",
+  "boerse.json",
+  "fin.e.js",
+  "index.html",
+  "ID.html"
 ];
 
-// Achse A (BEN / DA / NE)
-const A = {
-  BEN: ["BEN.tmp","BEN-NC3×3","BEN-NC6eT6D","BEN-NC9×9","TMP","TRANS","WARB"],
-  DA:  ["DA.tmp","DA-NC3×3","DA-NC6eX6D","DA-NC9×9","TMP","TRANS","WARB"],
-  NE:  ["NE.tmp","NE-NC3×3","NE-NC6eY6D","NE-NC9×9","TMP","TRANS","WARB"]
-};
-
-// Achse B (C / X / Z)
-const Baxis = {
-  C: ["C.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
-  X: ["X.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
-  Z: ["Z.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"]
-};
-
-// Achse C (DE / TR / EN)
-const Caxis = {
-  DE: ["DE.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
-  TR: ["TR.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"],
-  EN: ["EN.tmp","NC3×3","NC6e","NC9×9","TMP","TRANS","WARB"]
-};
-
-// Vergleichsfunktion
+// ARG‑Engine
 function compare(base, target) {
   let have = [];
   let need = [];
@@ -68,14 +47,13 @@ function compare(base, target) {
   return { have, need };
 }
 
-// ARG‑Engine
 function arg(base, target) {
   return compare(base, target);
 }
 
 function xARG(base, target) {
   return compare(
-    base.concat(["NC²","NC²□","NC²octa²","NC²octa³","6E→6D.tech","12e"]),
+    base.concat(["NC²","NC²□","6E→6D.tech","12e","STATIONEN.raw"]),
     target
   );
 }
@@ -94,60 +72,40 @@ function ARG3(base, target) {
 function runVerify() {
   let out = "";
 
-  out += "SETUP‑VERIFY für Station: " + station + "\n";
-  out += "=====================================\n\n";
+  out += "SET · VERIFY · Zentrum\n";
+  out += "=======================\n\n";
 
-  out += "ARG‑Engine aktiv (arg + xARG + 3te‑ARG gleichzeitig)\n\n";
-
-  out += "SETUP‑Vector:\n-------------\n";
-  out += SETUP.join(", ") + "\n\n";
+  out += "SET‑Vector:\n-----------\n";
+  out += SET.join(", ") + "\n\n";
 
   out += "RESPO‑Vector:\n-------------\n";
   out += RESPO.join(", ") + "\n\n";
 
-  out += "Achsen:\n--------\n";
-  out += "A = BEN / DA / NE\n";
-  out += "B = C / X / Z\n";
-  out += "C = DE / TR / EN\n\n";
+  out += "ARG‑Analyse:\n-------------\n";
 
-  out += "ARG‑Analyse (TIC‑TAC‑TOE‑Matrix):\n----------------------------------\n";
+  const r1 = arg(SET, RESPO);
+  const r2 = xARG(SET, RESPO);
+  const r3 = ARG3(SET, RESPO);
 
-  // Achse A
-  out += "Achse A (BEN / DA / NE)\n";
-  for (const key in A) {
-    const r1 = arg(SETUP, A[key]);
-    const r2 = xARG(SETUP, A[key]);
-    const r3 = ARG3(SETUP, A[key]);
-    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
-  }
-  out += "\n";
+  out += "arg‑Ebene: " + r1.need.length + " fehlt\n";
+  out += "xARG‑Ebene: " + r2.need.length + " fehlt\n";
+  out += "3te‑ARG‑Ebene: " + r3.need.length + " fehlt\n\n";
 
-  // Achse B
-  out += "Achse B (C / X / Z)\n";
-  for (const key in Baxis) {
-    const r1 = arg(SETUP, Baxis[key]);
-    const r2 = xARG(SETUP, Baxis[key]);
-    const r3 = ARG3(SETUP, Baxis[key]);
-    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
-  }
-  out += "\n";
+  out += "SET‑Status:\n-----------\n";
+  out += "CORE = SET\n";
+  out += "KONSTELLATION = TMP\n";
+  out += "FREQ = 12e\n";
+  out += "6D = D2\n";
+  out += "360° = Zentrum‑Sequenz\n";
+  out += "ROLLE = Matrix & Stabilisierung\n";
+  out += "STATUS = Aktiv\n";
 
-  // Achse C
-  out += "Achse C (DE / TR / EN)\n";
-  for (const key in Caxis) {
-    const r1 = arg(SETUP, Caxis[key]);
-    const r2 = xARG(SETUP, Caxis[key]);
-    const r3 = ARG3(SETUP, Caxis[key]);
-    out += key + " → arg(" + r1.need.length + " fehlt), xARG(" + r2.need.length + " fehlt), 3te‑ARG(" + r3.need.length + " fehlt)\n";
-  }
-  out += "\n";
+  const ready = (r1.need.length + r2.need.length + r3.need.length);
+  out += "READY = " + (ready === 0 ? "100%" : (100 - ready * 5) + "%") + "\n\n";
 
-  out += "PORT‑Dach‑Analyse:\n-------------------\n";
-  out += "SETUP deckt alle 3 ARG‑Ebenen teilweise ab.\n";
-  out += "PORT siedelt sich unter: arg (Basis‑Start)\n\n";
-
-  out += "Empfehlung:\n-----------\n";
-  out += "SETUP ist funktionsfähig — PORT kann SETUP als Start‑Master nutzen.\n";
+  out += "PORT‑Export:\n------------\n";
+  out += "SET kann geladen werden.\n";
+  out += "Dach = arg / xARG / 3te‑ARG aktiv.\n";
 
   document.getElementById("output").textContent = out;
 }
@@ -156,10 +114,10 @@ function runVerify() {
 
 <body onload="runVerify()">
 
-<h1>SETUP‑VERIFY • arg / xARG / 3te‑ARG</h1>
+<h1>SET · VERIFY · Zentrum</h1>
 
 <div class="block">
-  <h2>Analyse‑Output</h2>
+  <h2>Analyse</h2>
   <pre id="output"></pre>
 </div>
 
