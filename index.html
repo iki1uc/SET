@@ -2,34 +2,79 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>SET · Zentrum</title>
+<title>SET · Zentrum · System</title>
+
 <style>
 body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
 h1, h2 { color:#6cf; }
 pre { background:#111; border:1px solid #333; padding:12px; }
 a { color:#6cf; display:block; margin:10px 0; }
+.block { background:#111; border:1px solid #333; padding:15px; margin:20px 0; }
+.good { color:#0f0; }
+.mid { color:#ff0; }
+.bad { color:#f33; }
 </style>
+
+<script>
+// Lädt verify.html dynamisch
+async function loadVerify() {
+  try {
+    const res = await fetch("./verify.html");
+    const text = await res.text();
+
+    // Extrahiere READY‑Wert aus verify‑Output
+    const readyMatch = text.match(/READY\s*=\s*(\d+%)/);
+    const ready = readyMatch ? readyMatch[1] : "N/A";
+
+    document.getElementById("ready").textContent = ready;
+    document.getElementById("verifyStatus").textContent = "verify.html geladen ✓";
+  } catch (e) {
+    document.getElementById("verifyStatus").textContent = "verify.html nicht gefunden ✗";
+    document.getElementById("ready").textContent = "N/A";
+  }
+}
+</script>
 </head>
 
-<body>
+<body onload="loadVerify()">
 
 <h1>SET · Zentrum</h1>
 
-<pre>
+<div class="block">
+  <h2>System‑Status</h2>
+  <pre>
 CORE = SET
 KONSTELLATION = TMP
 FREQ = 12e
 6D = D2
-360° = Zentrum-Sequenz
+360° = Zentrum‑Sequenz
 ROLLE = Matrix & Stabilisierung
 STATUS = Aktiv
-READY = 100%
-</pre>
+READY = <span id="ready" class="good">…</span>
+  </pre>
+</div>
+
+<div class="block">
+  <h2>verify.html</h2>
+  <pre id="verifyStatus">Lade verify.html…</pre>
+</div>
+
+<div class="block">
+  <h2>Tech‑Matrix</h2>
+  <pre>
+ARG‑Engine: arg + xARG + 3te‑ARG aktiv
+Matrix‑Ebene: NC² / NC²□ / NC²octa² / NC²octa³
+6D‑Ebene: 6E→6D.tech / 6D‑Baum.raw
+12e‑Ebene: 12e allin/allout
+RESPO‑Ebene: SET.respo / AIR.json / boerse.json / fin.e.js
+  </pre>
+</div>
 
 <h2>Dateien</h2>
 <a href="./ID.html">Identität</a>
 <a href="./RESPO/boerse.json">boerse.json</a>
 <a href="./fin.e.js">fin.e.js</a>
+<a href="./verify.html">verify.html</a>
 
 </body>
 </html>
